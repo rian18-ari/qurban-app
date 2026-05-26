@@ -17,17 +17,27 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # --- TAMBAHKAN STEP SETUP PHP DI SINI ---
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: mbstring, xml, ctype, iconv, mysql, zip
+        coverage: none
+    # ----------------------------------------
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
+    # Mengubah key cache sedikit supaya ikut merujuk ke versi PHP 8.4
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
       with:
         path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        key: ${{ runner.os }}-php8.4-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
-          ${{ runner.os }}-php-
+          ${{ runner.os }}-php8.4-
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
